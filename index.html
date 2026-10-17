@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Task Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode">
+                Dark mode
+            </button>
+            <h1>Student Task Tracker</h1>
+            <p class="subtitle">Plan your study. Track your progress. Never miss an exam.</p>
+        </header>
+
+        <section id="next-exam" class="next-exam" aria-live="polite"></section>
+
+        <nav class="tabs" aria-label="Sections">
+            <button type="button" class="tab active" data-tab="tasks" aria-pressed="true">Tasks</button>
+            <button type="button" class="tab" data-tab="exams" aria-pressed="false">Exams</button>
+            <button type="button" class="tab" data-tab="marks" aria-pressed="false">Marks</button>
+        </nav>
+
+        <!-- TASKS -->
+        <section id="tasks-panel" class="task-card">
+            <form id="task-form">
+                <label for="task-input">What do you need to do?</label>
+
+                <div class="input-row">
+                    <input
+                        type="text"
+                        id="task-input"
+                        placeholder="e.g. Study Data Structures"
+                        maxlength="120"
+                        required
+                    >
+                    <button type="submit">+ Add Task</button>
+                </div>
+
+                <div class="options-row">
+                    <div class="field">
+                        <label for="task-priority">Priority</label>
+                        <select id="task-priority">
+                            <option value="high">High</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="task-due">Due date (optional)</label>
+                        <input type="date" id="task-due">
+                    </div>
+                </div>
+            </form>
+
+            <div class="stats">
+                <span id="total-count">Total: 0</span>
+                <span id="completed-count">Completed: 0</span>
+            </div>
+
+            <div class="progress" role="progressbar" aria-label="Task progress"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="progress-text" id="progress-text">0% done</p>
+
+            <div class="filter-row" aria-label="Filter tasks">
+                <button type="button" class="filter active" data-filter="all">All</button>
+                <button type="button" class="filter" data-filter="pending">Pending</button>
+                <button type="button" class="filter" data-filter="completed">Completed</button>
+            </div>
+
+            <ul id="task-list" aria-label="Your study tasks"></ul>
+
+            <p id="empty-message">No tasks yet. Add your first study task!</p>
+
+            <button type="button" id="clear-completed" class="clear-button">
+                Clear Completed Tasks
+            </button>
+        </section>
+
+        <!-- EXAMS -->
+        <section id="exams-panel" class="task-card" hidden>
+            <form id="exam-form">
+                <div class="exam-grid">
+                    <div class="field wide">
+                        <label for="exam-course">Course</label>
+                        <input
+                            type="text"
+                            id="exam-course"
+                            placeholder="e.g. CSE 2101 Data Structures"
+                            maxlength="80"
+                            required
+                        >
+                    </div>
+                    <div class="field">
+                        <label for="exam-type">Exam type</label>
+                        <select id="exam-type">
+                            <option value="ct1" selected>CT-1</option>
+                            <option value="ct2">CT-2</option>
+                            <option value="ct3">CT-3</option>
+                            <option value="mid">Mid</option>
+                            <option value="final">Final</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="exam-date">Date</label>
+                        <input type="date" id="exam-date" required>
+                    </div>
+                    <div class="field">
+                        <label for="exam-time">Time</label>
+                        <input type="time" id="exam-time" required>
+                    </div>
+                    <div class="field wide">
+                        <label for="exam-note">Room or syllabus (optional)</label>
+                        <input
+                            type="text"
+                            id="exam-note"
+                            placeholder="e.g. Room 304, Chapters 1 to 3"
+                            maxlength="100"
+                        >
+                    </div>
+                </div>
+                <button type="submit" class="primary-button">+ Add Exam</button>
+            </form>
+
+            <div class="filter-row exam-filters" aria-label="Filter exams">
+                <button type="button" class="exam-filter active" data-exam-filter="all">All</button>
+                <button type="button" class="exam-filter" data-exam-filter="ct1">CT-1</button>
+                <button type="button" class="exam-filter" data-exam-filter="ct2">CT-2</button>
+                <button type="button" class="exam-filter" data-exam-filter="ct3">CT-3</button>
+                <button type="button" class="exam-filter" data-exam-filter="mid">Mid</button>
+                <button type="button" class="exam-filter" data-exam-filter="final">Final</button>
+            </div>
+
+            <ul id="exam-list" aria-label="Your exams"></ul>
+
+            <p id="exam-empty-message">No exams yet. Add your next CT or final exam!</p>
+
+            <button type="button" id="clear-past-exams" class="clear-button">
+                Clear Finished Exams
+            </button>
+        </section>
+
+        <!-- MARKS -->
+        <section id="marks-panel" class="task-card" hidden>
+            <form id="marks-form">
+                <div class="marks-grid">
+                    <div class="field wide">
+                        <label for="marks-course">Course</label>
+                        <input type="text" id="marks-course" placeholder="e.g. CSE 2101 Data Structures" maxlength="80" required>
+                    </div>
+                    <div class="field">
+                        <label for="marks-ct-total">Marks per CT</label>
+                        <input type="number" id="marks-ct-total" value="20" min="1" step="any" required>
+                    </div>
+                    <div class="field">
+                        <label for="marks-ct-weight">Best 2 CT converted to</label>
+                        <input type="number" id="marks-ct-weight" value="45" min="1" step="any" required>
+                    </div>
+                    <div class="field">
+                        <label for="marks-mid-total">Mid total marks</label>
+                        <input type="number" id="marks-mid-total" value="45" min="1" step="any" required>
+                    </div>
+                    <div class="field">
+                        <label for="marks-assign-weight">Assignment total marks</label>
+                        <input type="number" id="marks-assign-weight" value="15" min="1" step="any" required>
+                    </div>
+                    <div class="field">
+                        <label for="marks-att-total">Attendance &amp; performance total</label>
+                        <input type="number" id="marks-att-total" value="15" min="1" step="any" required>
+                    </div>
+                    <div class="field">
+                        <label for="marks-final-total">Final total marks</label>
+                        <input type="number" id="marks-final-total" value="180" min="1" step="any" required>
+                    </div>
+                </div>
+                <p class="marks-hint" id="marks-total-hint">Course total: 300</p>
+                <button type="submit" class="primary-button">+ Add Course</button>
+            </form>
+
+            <ul id="marks-list" aria-label="Your courses"></ul>
+
+            <p id="marks-empty-message">No courses yet. Add a course to save CT, mid and assignment marks.</p>
+        </section>
+
+        <footer>
+            <p>Built by a CSE student | Student Task Tracker</p>
+        </footer>
+    </main>
+</body>
+</html>
